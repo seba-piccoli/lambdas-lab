@@ -1,6 +1,8 @@
-package com.javanme.java8;
+package test.java.com.javanme.java8;
 
 import org.junit.Test;
+
+import main.java.com.javanme.java8.Avanzado;
 
 import java.util.Arrays;
 import java.util.List;

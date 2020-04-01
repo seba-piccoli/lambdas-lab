@@ -1,6 +1,9 @@
-package com.javanme.java8;
+package main.java.com.javanme.java8;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Clase con ejercicios nivel básico
@@ -17,7 +20,14 @@ public class Basico {
      * @return Lista que contiene las palabras en mayúsculas
      */
     public List<String> ejercicio1(List<String> palabras) {
-        throw new UnsupportedOperationException();
+
+    	List<String> resultado = null;
+    	
+    	resultado = palabras.stream().
+    			    map(s -> s.toUpperCase()).
+    			    collect(Collectors.toList());
+    	
+    	return resultado;
     }
 
     /**
@@ -29,7 +39,9 @@ public class Basico {
      * @return lista que contiene cadenas de texto cuyo tamaño de caracteres es superior a 10
      */
     public List<String> ejercicio2(List<String> listado) {
-        throw new UnsupportedOperationException();
+        List<String> aux = listado;
+        aux.removeIf(s -> s.length() <= 10);
+        return aux;
     }
 
     /**
@@ -42,7 +54,12 @@ public class Basico {
      * @see java.util.stream.Collectors
      */
     public String ejercicio3(List<String> listado) {
-        throw new UnsupportedOperationException();
+    	Optional<String> resultado = listado.stream().
+     		               filter(s -> (listado.indexOf(s) >= 2)&&(listado.indexOf(s) < 5)).
+     		               reduce((s1, s2) -> s1 + '-' + s2);
+    	
+    	return resultado.get();
+    	
     }
 
     /**
@@ -56,7 +73,10 @@ public class Basico {
      * @see java.util.stream.Collectors
      */
     public List<Integer> ejercicio4(List<String> listado) {
-        throw new UnsupportedOperationException();
+        return listado.stream().
+        	   map(s -> Integer.valueOf(s)).
+        	   sorted().
+        	   collect(Collectors.toList());
     }
 
     /**
@@ -70,6 +90,37 @@ public class Basico {
      * @see java.util.stream.Collectors
      */
     public List<String> ejercicio5(List<String> listado) {
-        throw new UnsupportedOperationException();
+    	
+    	@SuppressWarnings("hiding")
+		class MyComparator<String> implements Comparator<String>{
+
+			@Override
+			public int compare(String o1, String o2) {
+
+				if(o1.toString().equalsIgnoreCase(o2.toString()))
+					return 0;
+				
+				int resultado = o1.toString().length() > o2.toString().length() ? 1 : 0;
+				
+				if(resultado == 1)
+					return resultado;
+				
+				resultado = o1.toString().length() < o2.toString().length() ? -1 : 0;
+
+				if(resultado == -1)
+					return resultado;				
+				
+				return o1.toString().compareTo(o2.toString());
+
+			}
+    		
+
+    	}
+    	
+    	Comparator<String> comparator = new MyComparator<String>();
+    	
+    	return listado.stream().
+    		   sorted(comparator).
+    		   collect(Collectors.toList());
     }
 }

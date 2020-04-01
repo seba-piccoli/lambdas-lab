@@ -1,9 +1,17 @@
-package com.javanme.java8;
+package main.java.com.javanme.java8;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.OptionalInt;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Clase con ejercicios nivel intermedio
@@ -24,7 +32,18 @@ public class Intermedio {
      * @see java.util.stream.Stream
      */
     public long ejercicio1(Path archivo) {
-        throw new UnsupportedOperationException();
+    	
+        try {
+			
+			return Files.lines(archivo).
+				   filter(p -> p.length() != 0).
+				   count();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        
+        return 0;
     }
 
     /**
@@ -40,9 +59,47 @@ public class Intermedio {
      * @see java.util.stream.IntStream
      */
     public OptionalInt ejercicio2(Path archivo) {
-        throw new UnsupportedOperationException();
+
+        try {
+			
+			return Files.lines(archivo).
+				   mapToInt(l -> l.length()).
+				   max();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        
+        return null;
+    	
     }
 
+   	@SuppressWarnings("hiding")
+	class MyComparator<String> implements Comparator<String>{
+
+			@Override
+			public int compare(String o1, String o2) {
+
+				if(o1.toString().equalsIgnoreCase(o2.toString()))
+					return 0;
+				
+				int resultado = o1.toString().length() > o2.toString().length() ? 1 : 0;
+				
+				if(resultado == 1)
+					return resultado;
+				
+				resultado = o1.toString().length() < o2.toString().length() ? -1 : 0;
+
+				if(resultado == -1)
+					return resultado;				
+				
+				return o1.toString().compareTo(o2.toString());
+
+			}
+    		
+
+    	}    
+    
     /**
      * De las palabras que se encuentran en el archivo pasado por parámetro, conviertelas a minúsculas,
      * sin duplicados, ordenadas primero por tamaño y luego alfabeticamente.
@@ -61,7 +118,31 @@ public class Intermedio {
      * @see java.util.stream.Collectors
      */
     public String ejercicio3(Path archivo) {
-        throw new UnsupportedOperationException();
+
+
+    	
+    	Comparator<String> comparator = new MyComparator<String>();
+    	
+    	try {			
+    		String lineas = Files.lines(archivo).
+    						map(s -> s.toLowerCase()).
+    				        collect(Collectors.joining(" "));
+    		
+    		String palabras = Stream.of(lineas.split(REGEXP)).
+    		filter(s -> s.length() != 0).
+    		distinct().
+    		sorted(comparator).
+    		collect(Collectors.joining(" "));
+    		
+    		return palabras;
+    		 
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	    	
+    	
+    	return null;
+    	
     }
 
     /**
@@ -80,7 +161,25 @@ public class Intermedio {
      * @see java.util.stream.Collectors
      */
     public Map<Integer, List<String>> ejercicio4(Path archivo) {
-        throw new UnsupportedOperationException();
+    	
+    	try {
+			
+    		String lineas = Files.lines(archivo).
+    						limit(10).
+    				        collect(Collectors.joining(" "));
+    		
+    		Map<Integer, List<String>> palabras = Stream.of(lineas.split(REGEXP)).
+    		collect(Collectors.groupingBy(s -> s.length()));
+    		
+    		return palabras;
+    		 
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	    	
+    	
+    	return null;
+    	
     }
 
 
@@ -100,7 +199,24 @@ public class Intermedio {
      * @see java.util.stream.Collectors
      */
     public Map<String, Long> ejercicio5(Path archivo) {
-        throw new UnsupportedOperationException();
+    	
+    	try {
+			
+    		String lineas = Files.lines(archivo).
+    						limit(100).
+    				        collect(Collectors.joining(" "));
+    		
+    		Map<String, Long> palabras = Stream.of(lineas.split(REGEXP)).
+    		collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+    		
+    		return palabras;
+    		 
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	    	
+    	
+    	return null;
     }
 
     /**
@@ -127,7 +243,37 @@ public class Intermedio {
      * @see java.util.stream.Collectors
      */
     public Map<String, Map<Integer, List<String>>> ejercicio6(Path archivo) {
-        throw new UnsupportedOperationException();
+
+    	Comparator<String> comparator = new MyComparator<String>();
+    	
+		try {
+			String lineas = Files.lines(archivo).collect(Collectors.joining(" "));
+			
+    		String palabras = Stream.of(lineas.split(REGEXP)).
+    		filter(s -> s.length() != 0).
+    		distinct().
+    		sorted(comparator).
+    		collect(Collectors.joining(" "));
+    		
+            Stream <String> lines = Files.lines(archivo).
+            map(line -> line.split(REGEXP)).
+            flatMap(Arrays::stream).
+            map(s -> s.toString().toLowerCase()).
+            filter(s -> s.toString().strip().length() != 0).
+            distinct();
+		
+            Map<String, Map<Integer, List<String>>> mapa =
+            lines.collect(Collectors.groupingBy(s -> s.substring(0,1).toUpperCase(),
+                          Collectors.groupingBy(s -> s.length())));
+              
+            return mapa;
+            
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+    	
     }
 }
 
