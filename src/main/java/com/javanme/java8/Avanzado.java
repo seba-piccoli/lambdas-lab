@@ -1,4 +1,4 @@
-package com.javanme.java8;
+package main.java.com.javanme.java8;
 
 import java.util.List;
 
