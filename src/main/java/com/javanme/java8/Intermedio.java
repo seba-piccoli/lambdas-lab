@@ -259,7 +259,7 @@ public class Intermedio {
             map(line -> line.split(REGEXP)).
             flatMap(Arrays::stream).
             map(s -> s.toString().toLowerCase()).
-            filter(s -> s.toString().strip().length() != 0).
+            filter(s -> s.toString().trim().length() != 0).
             distinct();
 		
             Map<String, Map<Integer, List<String>>> mapa =
